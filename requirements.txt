@@ -244,7 +244,6 @@ tifffile>=2024.8.30
 tokenizers==0.21.2
 toml==0.10.2
 torch==2.7.1
-torchaudio==2.7.1+cpu
 torchvision==0.22.1+cpu
 tqdm==4.67.3
 transformers==4.53.2
