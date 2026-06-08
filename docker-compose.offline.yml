@@ -1,0 +1,100 @@
+version: '3.9'
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: joy_lms_db
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-joy_lms}
+      POSTGRES_USER: ${POSTGRES_USER:-joy_lms_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-devpassword}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-joy_lms_user} -d ${POSTGRES_DB:-joy_lms}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: joy_lms_redis
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  web:
+    image: joy-lms-web:offline
+    container_name: joy_lms_web
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py collectstatic --noinput &&
+             gunicorn joy_lms.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120"
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgres://joy_lms_user:devpassword@db:5432/joy_lms}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE:-joy_lms.settings.production}
+    volumes:
+      - ./media:/app/media
+      - ./staticfiles:/app/staticfiles
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
+
+  worker:
+    image: joy-lms-web:offline
+    container_name: joy_lms_worker
+    command: celery -A joy_lms worker --loglevel=info --concurrency=2
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgres://joy_lms_user:devpassword@db:5432/joy_lms}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE:-joy_lms.settings.production}
+    volumes:
+      - ./media:/app/media
+    depends_on:
+      - db
+      - redis
+    restart: unless-stopped
+
+  beat:
+    image: joy-lms-web:offline
+    container_name: joy_lms_beat
+    command: celery -A joy_lms beat --loglevel=info
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgres://joy_lms_user:devpassword@db:5432/joy_lms}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE:-joy_lms.settings.production}
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: joy_lms_nginx
+    depends_on:
+      - web
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.offline.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./staticfiles:/app/staticfiles:ro
+      - ./media:/app/media:ro
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:

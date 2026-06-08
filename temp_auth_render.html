@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Joy LMS — Where Learning Meets Fun! A modern gamified learning management system.">
+    <title>&#x27;Certified User&#x27; course for Digisafe: Digital Transformation for HSE - Player - Joy LMS</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Static CSS -->
+    
+    <link rel="stylesheet" href="/static/css/joy_lms.css?v=1.0.9">
+
+    
+
+<script>
+  var previewReadOnly = false;
+  var isStudentView = false;
+</script>
+
+
+<style>
+    .player-container {
+        display: flex;
+        gap: 20px;
+        height: calc(100vh - 120px);
+        min-height: 600px;
+    }
+    .player-sidebar {
+        width: 350px;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition: width 0.3s ease, opacity 0.3s ease;
+    }
+    .player-sidebar.collapsed {
+        width: 0;
+        opacity: 0;
+        border: none;
+    }
+    .player-sidebar-header {
+        padding: 20px;
+        border-bottom: 1px solid var(--glass-border);
+        background: rgba(255,255,255,0.5);
+    }
+    .course-progress-bar {
+        height: 6px;
+        background: rgba(0,0,0,0.1);
+        border-radius: 3px;
+        margin-top: 10px;
+        overflow: hidden;
+    }
+    .course-progress-fill {
+        height: 100%;
+        background: var(--success-color);
+        transition: width 0.3s ease;
+    }
+    .player-sidebar-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 10px;
+    }
+    .module-group {
+        margin-bottom: 16px;
+    }
+    .module-title {
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+        padding: 0 10px;
+        color: var(--text-color);
+    }
+    .lesson-item {
+        display: flex;
+        align-items: center;
+        padding: 10px 12px;
+        margin-bottom: 4px;
+        border-radius: 8px;
+        text-decoration: none;
+        color: var(--text-color);
+        transition: background 0.2s;
+        font-size: 0.9rem;
+    }
+    .lesson-item:hover {
+        background: rgba(0,0,0,0.05);
+    }
+    .lesson-item.active {
+        background: rgba(var(--primary-color-rgb), 0.1);
+        border-left: 4px solid var(--primary-color);
+        font-weight: 600;
+    }
+    .lesson-icon {
+        margin-right: 12px;
+        font-size: 1.1rem;
+    }
+    .lesson-status {
+        margin-left: auto;
+        font-size: 0.8rem;
+    }
+    
+    .player-main {
+        flex: 1;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    .lesson-header {
+        padding: 20px 30px;
+        border-bottom: 1px solid var(--glass-border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .lesson-content-area {
+        flex: 1;
+        padding: 30px;
+        overflow-y: auto !important;
+        min-height: 0;
+        overscroll-behavior: contain;
+    }
+    .lesson-text {
+        line-height: 1.7;
+        word-break: break-word;
+    }
+    .lesson-footer {
+        padding: 20px 30px;
+        border-top: 1px solid var(--glass-border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(255,255,255,0.5);
+    }
+    
+    .video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 */
+        height: 0;
+        overflow: hidden;
+        border-radius: 12px;
+        background: #000;
+        margin-bottom: 20px;
+    }
+    .video-container iframe, .video-container video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .yt-shell { position: relative; width: 100%; display: flex; flex-direction: column; height: 100%; border-radius: 8px; overflow: hidden; background: #000; }
+    .yt-shell iframe { pointer-events: none; width: 100%; height: 100%; flex-grow: 1; border: none; }
+    .controls { display:flex; flex-wrap:wrap; gap:10px; margin-top:0px; align-items:center; }
+    .wm-tile { position: absolute; inset: 0; z-index: 9999; pointer-events: none; user-select: none; opacity: 0.18; background-repeat: repeat; background-size: 420px 240px; }
+</style>
+
+
+    <style>
+        .nav-notif-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .notif-bell-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            font-size: 1.08rem;
+        }
+        .notif-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 10px;
+            background: #dc2626;
+            color: #fff;
+            font-size: 0.68rem;
+            line-height: 18px;
+            text-align: center;
+            padding: 0 4px;
+            font-weight: 700;
+            border: 1px solid #fff;
+        }
+        .notif-badge.hidden {
+            display: none;
+        }
+        .notif-popup {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 10px);
+            width: 420px;
+            max-width: calc(100vw - 24px);
+            border: 1px solid var(--glass-border);
+            background: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.22);
+            z-index: 2000;
+            display: none;
+            overflow: hidden;
+        }
+        .notif-popup.open {
+            display: block;
+        }
+        .notif-head {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .notif-mark-all-btn {
+            border: 1px solid var(--glass-border);
+            background: rgba(16, 185, 129, 0.12);
+            color: #065f46;
+            font-size: 0.74rem;
+            font-weight: 700;
+            border-radius: 999px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .notif-mark-all-btn:hover {
+            background: rgba(16, 185, 129, 0.2);
+        }
+        .notif-head-title {
+            font-weight: 700;
+            font-size: 0.92rem;
+        }
+        .notif-counters {
+            display: flex;
+            gap: 8px;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--glass-border);
+            background: rgba(15, 23, 42, 0.03);
+            flex-wrap: wrap;
+        }
+        .notif-counter-pill {
+            font-size: 0.76rem;
+            border-radius: 999px;
+            border: 1px solid var(--glass-border);
+            padding: 5px 10px;
+            font-weight: 600;
+        }
+        .notif-list {
+            max-height: 340px;
+            overflow-y: auto;
+            padding: 6px;
+        }
+        .notif-item {
+            display: block;
+            padding: 10px;
+            border-radius: 10px;
+            text-decoration: none;
+            border: 1px solid transparent;
+            margin-bottom: 6px;
+            color: inherit;
+            background: rgba(0,0,0,0.02);
+        }
+        .notif-item:hover {
+            border-color: var(--glass-border);
+            background: rgba(99, 102, 241, 0.07);
+        }
+        .notif-item.unread {
+            border-color: rgba(220, 38, 38, 0.18);
+            background: rgba(220, 38, 38, 0.06);
+        }
+        .notif-item-title {
+            font-size: 0.86rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .notif-item-body {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .notif-item-meta {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+        }
+        .notif-meta-left,
+        .notif-meta-right {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .notif-mark-read-btn {
+            border: 1px solid var(--glass-border);
+            background: rgba(16, 185, 129, 0.12);
+            color: #065f46;
+            font-weight: 700;
+            border-radius: 8px;
+            font-size: 0.68rem;
+            padding: 3px 6px;
+            cursor: pointer;
+        }
+        .notif-mark-read-btn:hover {
+            background: rgba(16, 185, 129, 0.2);
+        }
+        .notif-empty {
+            padding: 22px 12px;
+            text-align: center;
+            font-size: 0.84rem;
+            color: var(--text-muted);
+        }
+    </style>
+
+    <!-- Theme Initialization - light is default, dark is opt-in -->
+    <script>
+        const savedTheme = localStorage.getItem('theme_v2') || 'light';
+        if (savedTheme === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
+</head>
+<body>
+    
+    <div class="app-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="main-sidebar">
+            <script>
+                if (localStorage.getItem('mainSidebarCollapsed') === 'true') {
+                    document.getElementById('main-sidebar').classList.add('collapsed');
+                }
+            </script>
+            <div class="sidebar-brand">
+                
+                    <div class="brand-box-row" id="brandCanvasSidebar">
+                        <div class="brand-box brand-box-left" id="brandLayerLeft">
+                            
+                                <img src="/media/branding/Logo_branding_DIA_main.jpg" alt="Brand left" class="brand-box-image brand-box-image-left">
+                            
+                        </div>
+                        <div class="brand-box brand-box-right" id="brandLayerRight">
+                            
+                                <img src="/media/branding/Logo_name_trans.jpg" alt="Brand right" class="brand-box-image brand-box-image-right">
+                            
+                        </div>
+                        <div class="brand-box-text" id="brandLayerText1"></div>
+                        <div class="brand-box-text" id="brandLayerText2"></div>
+                    </div>
+                    
+                    <script id="sidebar-brand-layout" type="application/json">{"left": {"h": 100.0, "w": 47.0, "x": 2.272789539119925, "y": 0.0, "z": 2}, "right": {"h": 100.0, "w": 56.63636338415226, "x": 42.681799754111765, "y": 0.0, "z": 2}, "text1": {"h": 15.273126293036569, "w": 41.77272104608801, "x": 58.22727895391199, "y": 15.454545076228397, "z": 4, "text": "LMS", "color": "#a1b696", "fontSize": 16, "fontStyle": "normal", "textAlign": "right", "fontWeight": "400"}, "text2": {"h": 18.0, "w": 56.22727201792824, "x": 43.77272798207176, "y": 82.0, "z": 4, "text": "EK Platform", "color": "#c82b04", "fontSize": 14, "fontStyle": "normal", "textAlign": "center", "fontWeight": "400"}, "helpdesk_about_content": "\u003Cp\u003EJoy LMS is a role-aware learning platform for courses, notebooks, communication, and support workflows. It is designed to keep learning content, learner progress, and collaboration in one workspace.\u003C/p\u003E", "helpdesk_about_heading": "About us", "helpdesk_contact_content": "\u003Cul\u003E\u003Cli\u003ESystem Administrator for platform access or configuration issues.\u003C/li\u003E\u003Cli\u003EInstitute Administrator for institute-level support and user mapping.\u003C/li\u003E\u003Cli\u003ECourse Coordinator for course-specific questions and approvals.\u003C/li\u003E\u003Cli\u003EUse Mailbox for direct in-app messages and support attachments.\u003C/li\u003E\u003Cli\u003EUse Helpdesk for general platform guidance and orientation.\u003C/li\u003E\u003C/ul\u003E", "helpdesk_contact_heading": "Contact", "helpdesk_reachus_content": "\u003Cp\u003E\u003Cstrong style=\"color: rgb(107, 36, 178);\"\u003EFor Institute/BU/Corporate function Onboarding:\u003C/strong\u003E\u003C/p\u003E\u003Cp\u003E\u003Cstrong\u003EDr. Ajoy Lal Dutta\u003C/strong\u003E\u003C/p\u003E\u003Cp\u003E\u003Cstrong\u003EDeputy General Manager (Production)\u003C/strong\u003E\u003C/p\u003E\u003Cp\u003E\u003Cstrong style=\"background-color: rgb(255, 255, 255);\"\u003EProject DOT; Digital \u0026amp; Technology, \u003C/strong\u003E\u003Cstrong\u003EONGC Ltd.,\u0026nbsp;\u003C/strong\u003E\u003C/p\u003E\u003Cp\u003E1374, 1st Floor, B-wing. Deendayal Urja Bhawan,\u003C/p\u003E\u003Cp\u003EVasant Kunj, New Delhi-110070\u003C/p\u003E\u003Cp\u003EPhone: +91.11.2675\u003Cstrong\u003E1374\u003C/strong\u003E, Mobile: +91 9531107150/ 6003415589\u003C/p\u003E\u003Cp\u003ECPF No: 105095; Email: dutta_al@ongc.co.in\u003C/p\u003E\u003Cp\u003E\u003Cbr\u003E\u003C/p\u003E", "helpdesk_reachus_heading": "Reach us"}</script>
+                    
+                
+            </div>
+
+            
+            <div style="padding: 8px 20px;">
+                <a href="/dashboard/" class="btn btn-primary btn-full" style="justify-content: flex-start; padding: 10px; font-size: 1rem;">
+                    🏠 Home
+                </a>
+            </div>
+            
+            <div style="border-bottom: 1px solid var(--glass-border); margin: 2px 20px;"></div>
+            
+
+            <nav class="sidebar-menu">
+                
+                <a href="/dashboard/courses/" class="sidebar-link ">My Courses</a>
+                
+                <a href="/dashboard/mailbox/" class="sidebar-link ">Mailbox</a>
+                
+                <a href="/dashboard/institutes/?tab=institute-profiles" class="sidebar-link ">Institutes</a>
+                
+                <a href="/dashboard/notes/" class="sidebar-link ">Class Notes</a>
+                
+                <a href="/dashboard/profile/" class="sidebar-link ">My Profile</a>
+                
+                <a href="/p/dxus/" class="sidebar-link ">DXus Community</a>
+                
+                <a href="/dashboard/helpdesk/" class="sidebar-link ">Helpdesk</a>
+                
+            </nav>
+            
+            <div style="border-bottom: 1px solid var(--glass-border); margin: 4px 20px;"></div>
+
+        </aside>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            
+            <header class="top-navbar">
+                <div class="top-navbar-left">
+                    <button id="main-sidebar-toggle" class="btn btn-ghost" style="padding: 8px; font-size: 1.2rem; border-radius: 50%;">
+                        ☰
+                    </button>
+                </div>
+                <div class="top-navbar-right">
+                    <div class="nav-notif-wrap" id="navNotifWrap" data-snapshot-url="/dashboard/notifications/snapshot/" data-mark-read-url="/dashboard/notifications/mark-read/">
+                        <button id="notifBellBtn" class="notif-bell-btn" type="button" title="Notifications">
+                            🔔
+                            <span id="notifBadge" class="notif-badge hidden">0</span>
+                        </button>
+                        <div id="notifPopup" class="notif-popup" role="dialog" aria-label="Notifications popup">
+                            <div class="notif-head">
+                                <div class="notif-head-title">Notifications</div>
+                                <button id="notifMarkAllBtn" type="button" class="notif-mark-all-btn" title="Mark all as read">✓ Mark all read</button>
+                            </div>
+                            <div class="notif-counters">
+                                <span class="notif-counter-pill">Help Desk: <strong id="notifHelpCount">0</strong></span>
+                                <span class="notif-counter-pill">Restricted Approval: <strong id="notifRestrictedCount">0</strong></span>
+                            </div>
+                            <div id="notifList" class="notif-list">
+                                
+                                    <div class="notif-empty">No notifications yet.</div>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="session-info">
+                        <span id="login-time-display">Logged in: --:--</span>
+                        <span id="session-time-display">Session: 00:00:00</span>
+                    </div>
+                    
+                    <button id="theme-toggle" class="btn btn-ghost" style="padding: 8px; font-size: 1.2rem; border-radius: 50%;">
+                        <span class="theme-icon">🌞</span>
+                    </button>
+                    
+                    <div style="display: flex; align-items: center; gap: 12px; border-left: 1px solid var(--glass-border); padding-left: 20px;">
+                        <div style="text-align: right; line-height: 1.2;">
+                            <div style="font-weight: 600; font-size: 0.9rem;">new</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">
+                                Learner
+                            </div>
+                        </div>
+                        <div class="nav-avatar">👦</div>
+                        <a href="/logout/" onclick="localStorage.clear();" class="btn btn-ghost" style="padding: 6px 12px; font-size: 0.8rem; margin-left: 8px;">
+                            Logout
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Flash Messages -->
+            
+
+            <!-- Main Content -->
+            <main class="main-content">
+                
+
+<div class="player-container">
+    <!-- Sidebar -->
+    <div class="player-sidebar" id="course-sidebar">
+        <div class="player-sidebar-header">
+            <h3 style="font-size: 1.1rem; margin-bottom: 4px;">&#x27;Certified User&#x27; course for Digisafe: Digital Transformation for HSE</h3>
+            
+            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted);">
+                <span>Course Progress</span>
+                <span>0%</span>
+            </div>
+            <div class="course-progress-bar">
+                <div class="course-progress-fill" style="width: 0.0%;"></div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-top: 10px;">
+                <span>Time Tracker Progress</span>
+                <span>100%</span>
+            </div>
+            <div class="course-progress-bar">
+                <div class="course-progress-fill" style="width: 100.0%; background: #10b981;"></div>
+            </div>
+            
+            
+        </div>
+        <script>
+            if (localStorage.getItem('courseSidebarCollapsed') === 'true') {
+                document.getElementById('course-sidebar').classList.add('collapsed');
+            }
+        </script>
+        
+        <div class="player-sidebar-content" style="position: relative;">
+            
+            
+            <div class="module-group">
+                <div class="module-title">📦 Module 1: Introduction <span style="font-size: 0.75rem; font-weight: normal; color: #888; margin-left: 5px;">(2m 22s)</span></div>
+                
+                <a href="/dashboard/learn/3/lesson/15/" class="lesson-item active">
+                    <span class="lesson-icon">📄</span>
+                    <span class="lesson-name" style="flex:1;">Intro <span style="font-size: 0.75rem; color: #888; margin-left: 5px;">(10s)</span></span>
+                    
+                        <span class="lesson-status">
+                            
+                                
+                            
+                                
+                            
+                                
+                                    🔸
+                                
+                            
+                            
+                        </span>
+                    
+                </a>
+                
+                <a href="/dashboard/learn/3/lesson/16/" class="lesson-item ">
+                    <span class="lesson-icon">🎥</span>
+                    <span class="lesson-name" style="flex:1;">PPE Video Analytics <span style="font-size: 0.75rem; color: #888; margin-left: 5px;">(12s)</span></span>
+                    
+                        <span class="lesson-status">
+                            
+                                
+                            
+                                
+                                    🔸
+                                
+                            
+                                
+                            
+                            
+                        </span>
+                    
+                </a>
+                
+                <a href="/dashboard/learn/3/lesson/17/" class="lesson-item ">
+                    <span class="lesson-icon">❓</span>
+                    <span class="lesson-name" style="flex:1;">Evaluation: Post Course <span style="font-size: 0.75rem; color: #888; margin-left: 5px;">(120s)</span></span>
+                    
+                        <span class="lesson-status">
+                            
+                                
+                                    🔸
+                                
+                            
+                                
+                            
+                                
+                            
+                            
+                        </span>
+                    
+                </a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="player-main">
+        <div class="lesson-header" style="display: flex; align-items: center; gap: 12px; justify-content: flex-start;">
+            <button id="course-sidebar-toggle" class="btn btn-ghost" style="padding: 8px; font-size: 1.2rem; border-radius: 50%;" title="Toggle Modules">
+                ☰
+            </button>
+            <h2 style="margin: 0;">Intro</h2>
+            
+            
+                
+                    
+                
+                    
+                
+                    
+                
+            
+            <a href="/dashboard/courses/" class="btn btn-ghost" style="margin-left: auto; padding: 8px 12px; font-size: 0.95rem; border-radius: 20px; display: flex; align-items: center; gap: 6px; text-decoration: none; font-weight: 600;" title="Back to Courses">
+                ⬅️ Back
+            </a>
+        </div>
+        
+        <div class="lesson-content-area  ">
+            
+            
+            
+                <div class="lesson-text" style="font-size: 1.1rem; line-height: 1.6;">
+                    <h1 style="line-height: 1.5;"><span style="font-size: 18px;">Digital Transformation in HSE (Health, Safety &amp; Environment) for the Oil &amp; Gas industry means using digital technologies, data, automation, and intelligent systems to improve:</span></h1><ol><span style="font-size: 18px;">
+</span><li style="line-height: 2;">
+<span style="font-size: 18px;">worker safety
+</span></li><li style="line-height: 2;"><span style="font-size: 18px;">
+operational safety
+</span></li><li style="line-height: 2;"><span style="font-size: 18px;">
+environmental protection
+</span></li><li style="line-height: 2;"><span style="font-size: 18px;">
+regulatory compliance
+</span></li><li style="line-height: 2;"><span style="font-size: 18px;">
+emergency response
+</span></li><li style="line-height: 2;"><span style="font-size: 18px;">
+risk prediction and prevention<br><br></span>
+</li><span style="font-size: 18px;">
+</span><span style="font-size: 18px;">
+</span><span style="font-size: 18px;">
+</span><span style="font-size: 18px;">
+</span><span style="font-size: 18px;">
+</span></ol><ul data-start="177" data-end="330"><span style="font-size: 18px;">
+</span></ul><p style="line-height: 1.5;"><span style="font-size: 18px;">
+
+</span></p><p data-start="332" data-end="417" style="line-height: 1.5;"><span style="font-size: 18px;">in upstream, midstream, downstream, offshore, refinery, and petrochemical operations.</span></p>
+                </div>
+                
+            
+        </div>
+        
+        
+        <div class="lesson-footer">
+            <div>
+                
+            </div>
+            <div style="display: flex; gap: 10px;">
+                
+                    <button class="btn mark-complete-btn" onclick="markComplete()" style="display:inline-flex;align-items:center;gap:8px;border:2px solid #94a3b8;border-radius:10px;padding:8px 18px;font-weight:600;cursor:pointer;transition:all 0.3s;">
+                        <span class="mc-checkbox" style="display:inline-block;width:20px;height:20px;border:2px solid #94a3b8;border-radius:5px;position:relative;transition:all 0.3s;"></span>
+                        <span class="mc-label">Mark Complete</span>
+                    </button>
+                
+                
+                    <a href="/dashboard/learn/3/lesson/16/" class="btn btn-primary next-lesson-btn" style="pointer-events:none;opacity:0.5;">Next: PPE Video Analytics ➡️</a>
+                
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<script>
+    function openEnrollPopupFromPreview() {
+        try {
+            if (window.top && typeof window.top.openEnrollModal === 'function') {
+                window.top.openEnrollModal();
+                return;
+            }
+            if (window.top && window.top !== window) {
+                window.top.postMessage({ type: 'joylms-open-enroll-modal' }, window.location.origin);
+                return;
+            }
+        } catch (e) {
+            // Fallback below for cross-frame access restrictions
+        }
+        window.top.location.href = "/dashboard/courses/3/preview/#enroll-actions";
+    }
+
+    
+</script>
+
+<script>
+
+    // ═══════════════════════════════════════════════════════════════
+    //  SMART COURSE PROGRESS & MARK COMPLETE SYSTEM
+    //  Best-practice: Coursera/Udemy-style checkbox completion flow
+    // ═══════════════════════════════════════════════════════════════
+    const LESSON_ID = "15";
+    const LESSON_DURATION_REQ = 10;
+    const TOTAL_LESSONS = 3;
+    let watchedSeconds = 140;
+    let lessonAlreadyCompleted = false;
+    let justCompleted = false;
+
+    // ── Button state machine ──
+    function updateMarkCompleteBtns() {
+        const btns = document.querySelectorAll('.mark-complete-btn');
+        const nextBtns = document.querySelectorAll('.next-lesson-btn');
+        const courseDoneBtns = document.querySelectorAll('.course-completed-btn');
+
+        btns.forEach(btn => {
+            const checkbox = btn.querySelector('.mc-checkbox');
+            const label = btn.querySelector('.mc-label');
+
+            if (lessonAlreadyCompleted || justCompleted) {
+                // STATE: COMPLETED
+                btn.disabled = true;
+                btn.style.border = '2px solid #10b981';
+                btn.style.background = 'rgba(16,185,129,0.1)';
+                btn.style.color = '#10b981';
+                btn.style.cursor = 'default';
+                if (checkbox) {
+                    checkbox.style.border = '2px solid #10b981';
+                    checkbox.style.background = '#10b981';
+                    checkbox.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" style="position:absolute;top:1px;left:1px;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="white"/></svg>';
+                }
+                if (label) label.textContent = justCompleted ? '🎉 Congratulations!' : 'Completed ✅';
+                // Enable Next button
+                nextBtns.forEach(n => { n.style.pointerEvents = 'auto'; n.style.opacity = '1'; });
+                courseDoneBtns.forEach(n => { n.disabled = false; n.style.opacity = '1'; });
+                return;
+            }
+
+            const remaining = Math.max(0, LESSON_DURATION_REQ - watchedSeconds);
+            if (remaining > 0) {
+                // STATE: WAITING FOR DURATION
+                const mins = Math.floor(remaining / 60);
+                const secs = remaining % 60;
+                btn.disabled = true;
+                btn.style.border = '2px solid #f59e0b';
+                btn.style.background = 'rgba(245,158,11,0.08)';
+                btn.style.color = '#f59e0b';
+                btn.style.cursor = 'not-allowed';
+                if (checkbox) {
+                    checkbox.style.border = '2px solid #f59e0b';
+                    checkbox.style.background = 'transparent';
+                    checkbox.innerHTML = '';
+                }
+                if (label) label.textContent = `⏳ ${mins}m ${secs}s remaining`;
+                // Keep Next disabled
+                nextBtns.forEach(n => { n.style.pointerEvents = 'none'; n.style.opacity = '0.5'; });
+                courseDoneBtns.forEach(n => { n.disabled = true; n.style.opacity = '0.5'; });
+            } else {
+                // STATE: READY TO COMPLETE
+                btn.disabled = false;
+                btn.style.border = '2px solid #3b82f6';
+                btn.style.background = 'rgba(59,130,246,0.08)';
+                btn.style.color = '#3b82f6';
+                btn.style.cursor = 'pointer';
+                if (checkbox) {
+                    checkbox.style.border = '2px solid #3b82f6';
+                    checkbox.style.background = 'transparent';
+                    checkbox.innerHTML = '';
+                }
+                if (label) label.textContent = 'Mark Complete';
+                // Keep Next disabled until completed
+                nextBtns.forEach(n => { n.style.pointerEvents = 'none'; n.style.opacity = '0.5'; });
+                courseDoneBtns.forEach(n => { n.disabled = true; n.style.opacity = '0.5'; });
+            }
+        });
+    }
+
+    // ── Mark Complete API call ──
+    function markComplete() {
+        if (previewReadOnly) { alert('Preview only: completion actions are disabled.'); return; }
+        if (isStudentView && typeof svRecordRun === 'function') { svRecordRun('complete'); return; }
+        if (lessonAlreadyCompleted || justCompleted) return;
+
+        // Client-side guard
+        if (LESSON_DURATION_REQ > 0 && watchedSeconds < LESSON_DURATION_REQ) {
+            const rem = LESSON_DURATION_REQ - watchedSeconds;
+            const m = Math.floor(rem / 60), s = rem % 60;
+            showFlash(`⏳ Please spend ${m}m ${s}s more on this lesson.`, '#f59e0b', '#1a1a2e');
+            return;
+        }
+
+        // Disable button immediately to prevent double-click
+        document.querySelectorAll('.mark-complete-btn').forEach(b => b.disabled = true);
+
+        fetch(`/api/v1/lessons/${LESSON_ID}/progress/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+            body: JSON.stringify({ is_completed: true, watch_percentage: 100 })
+        }).then(async response => {
+            const data = await response.json();
+            if (!response.ok) {
+                showFlash(data.error || 'Cannot mark as complete yet.', '#ef4444', 'white');
+                document.querySelectorAll('.mark-complete-btn').forEach(b => b.disabled = false);
+                return;
+            }
+            // SUCCESS → Show congratulations & update progress live
+            justCompleted = true;
+            updateMarkCompleteBtns();
+            showFlash('🎉 Lesson Completed! Great work!', '#10b981', 'white');
+
+            // Use the progress returned directly from the API
+            const newProgress = Math.round(data.course_progress_percentage || 0);
+
+            // Mark current lesson in sidebar as completed
+            const activeSidebar = document.querySelector('.lesson-item.active .lesson-status');
+            if (activeSidebar) activeSidebar.innerHTML = '<span style="color:#10b981;">✅</span>';
+
+            // Update progress bar width
+            const progressBars = document.querySelectorAll('.course-progress-bar');
+            if (progressBars[0]) {
+                const fill = progressBars[0].querySelector('.course-progress-fill');
+                if (fill) fill.style.width = newProgress + '%';
+            }
+            // Update the percentage text in sidebar
+            const sidebar = document.getElementById('course-sidebar');
+            if (sidebar) {
+                const spans = sidebar.querySelectorAll('span');
+                spans.forEach(sp => {
+                    if (sp.previousElementSibling && sp.previousElementSibling.textContent.includes('Course Progress')) {
+                        sp.textContent = newProgress + '%';
+                    }
+                });
+            }
+        });
+    }
+
+    function showFlash(msg, bg, color) {
+        const el = document.createElement('div');
+        el.style.cssText = `position:fixed;top:20px;left:50%;transform:translateX(-50%);background:${bg};color:${color};padding:15px 30px;border-radius:10px;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.25);font-weight:bold;font-size:1rem;animation:slideDown 0.3s ease;`;
+        el.innerText = msg;
+        document.body.appendChild(el);
+        setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity 0.3s'; setTimeout(() => el.remove(), 300); }, 3500);
+    }
+
+    // ── Ping time every 10 seconds ──
+    
+    setInterval(() => {
+        if (!lessonAlreadyCompleted && !justCompleted) {
+            fetch(`/api/v1/lessons/${LESSON_ID}/ping_time/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') }
+            }).then(r => r.json()).then(data => {
+                if (data.watch_duration_seconds && data.watch_duration_seconds > watchedSeconds) {
+                    watchedSeconds = data.watch_duration_seconds;
+                }
+            }).catch(() => {});
+        }
+    }, 10000);
+
+    // ── Tick local countdown every 1 second ──
+    setInterval(() => {
+        if (!lessonAlreadyCompleted && !justCompleted) {
+            watchedSeconds += 1;
+            updateMarkCompleteBtns();
+        }
+    }, 1000);
+    
+    document.addEventListener('DOMContentLoaded', updateMarkCompleteBtns);
+    
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+
+<!-- Video Modal & Wordpad -->
+<div id="videoModal" style="display:none; position:fixed; z-index: 1050; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8);">
+    <div style="background-color: var(--glass-bg); margin: 2% auto; padding: 20px; border: 1px solid rgba(255,255,255,0.1); width: 95%; height: 92%; border-radius: 12px; display: flex; flex-direction: column; backdrop-filter: blur(10px);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h2 style="margin: 0; color: var(--text-color);">🎥 Video Player & Class Notes - Intro</h2>
+            <span onclick="closeVideoModal()" style="color: var(--text-color); font-size: 28px; font-weight: bold; cursor: pointer; padding: 0 10px;">&times;</span>
+        </div>
+        <div style="display: flex; gap: 20px; height: calc(100% - 50px);">
+            <!-- Video Column -->
+            <div style="flex: 65%; display: flex; flex-direction: column;">
+                
+            </div>
+            <!-- Wordpad Column -->
+            <div style="flex: 35%; display: flex; flex-direction: column; background: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #ddd;">
+                <div style="padding: 15px; border-bottom: 1px solid #eee; background: #f8f9fa;">
+                    <h4 style="margin: 0 0 10px 0; font-size: 1.2rem; color: #333;">📝 Wordpad</h4>
+                    <div style="display: flex; gap: 10px;">
+                        
+                        <input type="text" id="noteFilename" value="certified-user-course-for-digisafe-digital-transformation-for-hse_introduction_20260606.md" style="flex: 1; padding: 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.9rem;" title="Filename">
+                        <button onclick="saveNote()" style="background: linear-gradient(135deg, #10B981, #059669); color: white; border: none; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">💾 Save</button>
+                    </div>
+                </div>
+                <!-- Quill container needs to explicitly fill remaining height -->
+                <div style="flex: 1; display: flex; flex-direction: column;">
+                    <div id="quillEditor" style="flex: 1; min-height: 0; border-top: 1px solid #ddd;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<style>
+    /* Fix quill editor text color in dark mode */
+    #quillEditor .ql-editor { color: #333; font-size: 16px; }
+    #quillEditor.ql-container.ql-snow { border: none; }
+    .ql-toolbar.ql-snow { border: none; border-bottom: 1px solid #ddd; background: #fff; }
+</style>
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script>
+    let quill;
+    function openVideoModal() {
+        if (isStudentView && typeof svRecordRun === 'function') svRecordRun('video');
+        document.getElementById('videoModal').style.display = 'block';
+        
+        const videos = document.getElementById('videoModal').querySelectorAll('video');
+        videos.forEach(v => {
+            if (v.readyState === 0) {
+                v.load();
+            }
+        });
+
+        if (!quill) {
+            quill = new Quill('#quillEditor', {
+                theme: 'snow',
+                placeholder: 'Type your notes here... (Rich Text supported)'
+            });
+        }
+        if (typeof window.initYouTubePlayer === 'function') {
+            setTimeout(window.initYouTubePlayer, 100);
+        }
+    }
+    
+    function closeVideoModal() {
+        document.getElementById('videoModal').style.display = 'none';
+        const iframes = document.getElementById('videoModal').querySelectorAll('iframe');
+        iframes.forEach(iframe => {
+            const src = iframe.src;
+            iframe.src = src;
+        });
+        const videos = document.getElementById('videoModal').querySelectorAll('video');
+        videos.forEach(v => v.pause());
+    }
+
+    function saveNote() {
+        if(!quill) return;
+        const content = quill.root.innerHTML;
+        const filename = document.getElementById('noteFilename').value;
+        
+        const saveBtn = event.target;
+        saveBtn.innerText = "⏳ Saving...";
+        
+        fetch("/dashboard/notes/save/", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: new URLSearchParams({
+                'title': filename,
+                'note_title': filename.replace(/\.md$/i, '').replace(/_/g, ' '),
+                'content': content,
+                'course_id': '3',
+                'course_name': '\u0027Certified User\u0027 course for Digisafe: Digital Transformation for HSE',
+                'institute_id': '4',
+                'institute_name': 'DIYA',
+                'lesson_id': '15',
+                'lesson_name': 'Intro'
+            })
+        }).then(res => res.json())
+          .then(data => {
+              if (data.status === 'success') {
+                  saveBtn.innerText = "✅ Saved!";
+                  setTimeout(() => saveBtn.innerText = "💾 Save", 2000);
+              } else {
+                  alert("Error saving note.");
+                  saveBtn.innerText = "💾 Save";
+              }
+          });
+    }
+
+    // Course Sidebar Toggle Logic
+    const courseSidebarToggleBtn = document.getElementById('course-sidebar-toggle');
+    if (courseSidebarToggleBtn) {
+        courseSidebarToggleBtn.addEventListener('click', () => {
+            const sidebar = document.getElementById('course-sidebar');
+            sidebar.classList.toggle('collapsed');
+            
+            if (sidebar.classList.contains('collapsed')) {
+                localStorage.setItem('courseSidebarCollapsed', 'true');
+            } else {
+                localStorage.setItem('courseSidebarCollapsed', 'false');
+            }
+        });
+    }
+
+    // YouTube Safe Embed Logic
+    (function () {
+      const wrap = document.getElementById('videoWrap');
+      if (!wrap) return;
+      const videoId = wrap.dataset.videoId;
+      const wmUser = wrap.dataset.wmUser;
+      const wmCourse = wrap.dataset.wmCourse;
+
+      function fmt2(n){return String(n).padStart(2,'0');}
+      function buildWmSvg(text){
+        const svg = `<?xml version="1.0" encoding="UTF-8"?>
+          <svg xmlns="http://www.w3.org/2000/svg" width="420" height="240">
+            <text x="20" y="120" fill="white" fill-opacity="0.55" font-size="16" font-family="Arial"
+                  transform="rotate(-25 20 120)">${text}</text>
+          </svg>`;
+        return 'data:image/svg+xml,' + encodeURIComponent(svg);
+      }
+
+      function refreshWatermark(){
+        const d = new Date();
+        const ts = `${fmt2(d.getDate())}-${fmt2(d.getMonth()+1)}-${d.getFullYear()} ${fmt2(d.getHours())}:${fmt2(d.getMinutes())}:${fmt2(d.getSeconds())}`;
+        const text = `${wmUser} • ${wmCourse} • ${ts}`;
+        document.getElementById('wmTile').style.backgroundImage = `url("${buildWmSvg(text)}")`;
+      }
+      refreshWatermark();
+      setInterval(refreshWatermark, 1000);
+
+      document.addEventListener('contextmenu', (e) => {
+        if (e.target.closest('.yt-shell')) e.preventDefault();
+      });
+
+      if (!videoId) {
+          const nativePlayer = document.getElementById('nativePlayer');
+          if (nativePlayer) {
+              function fmt(sec){
+                sec = Math.max(0, Math.floor(sec || 0));
+                const m = Math.floor(sec/60), s = sec%60;
+                return `${m}:${String(s).padStart(2,'0')}`;
+              }
+              document.getElementById('btnPlay').onclick = () => nativePlayer.play();
+              document.getElementById('btnPause').onclick = () => nativePlayer.pause();
+              document.getElementById('btnStop').onclick = () => {
+                  nativePlayer.pause();
+                  nativePlayer.currentTime = 0;
+              };
+              document.getElementById('btnBack').onclick = () => nativePlayer.currentTime -= 10;
+              document.getElementById('btnFwd').onclick = () => nativePlayer.currentTime += 10;
+
+              const seek = document.getElementById('seekBar');
+              seek.addEventListener('input', () => {
+                  const duration = nativePlayer.duration || 0;
+                  if (!duration) return;
+                  document.getElementById('curTime').textContent = fmt((seek.value/1000) * duration);
+              });
+              seek.addEventListener('change', () => {
+                  const duration = nativePlayer.duration || 0;
+                  if (!duration) return;
+                  nativePlayer.currentTime = (seek.value/1000) * duration;
+              });
+
+              nativePlayer.addEventListener('timeupdate', () => {
+                  if (previewReadOnly && nativePlayer.currentTime > 0.3) {
+                      nativePlayer.pause();
+                      nativePlayer.currentTime = 0.3;
+                  }
+                  const duration = nativePlayer.duration || 0;
+                  if (duration > 0) {
+                      seek.value = Math.floor((nativePlayer.currentTime/duration)*1000);
+                      document.getElementById('durTime').textContent = fmt(duration);
+                  }
+                  document.getElementById('curTime').textContent = fmt(nativePlayer.currentTime);
+              });
+
+              nativePlayer.addEventListener('loadedmetadata', () => {
+                  document.getElementById('durTime').textContent = fmt(nativePlayer.duration);
+              });
+          }
+          return;
+      }
+
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(tag);
+
+      let player, duration = 0, timer;
+
+      let ytApiReady = false;
+      let playerInitialized = false;
+
+      window.onYouTubeIframeAPIReady = function () {
+        ytApiReady = true;
+        if (document.getElementById('videoModal').style.display === 'block') {
+            window.initYouTubePlayer();
+        }
+      };
+
+      window.initYouTubePlayer = function() {
+        if (!ytApiReady || playerInitialized) return;
+        playerInitialized = true;
+        player = new YT.Player('yt-player', {
+          width: '100%',
+          height: '100%',
+          videoId: videoId,
+          playerVars: {
+            enablejsapi: 1,
+            controls: 0,
+            disablekb: 1,
+            fs: 0,
+            rel: 0,
+            playsinline: 1
+          },
+          events: {
+            onReady: onReady,
+            onStateChange: onStateChange,
+            onError: function(e) {
+                console.error("YouTube Error Code:", e.data);
+                if (e.data === 101 || e.data === 150) {
+                    alert("YouTube Video Error: The owner of this video does not allow it to be played in custom players (embedding disabled). Please use a different video.");
+                } else {
+                    alert("YouTube Video Error: Code " + e.data);
+                }
+            }
+          }
+        });
+      };
+
+      function fmt(sec){
+        sec = Math.max(0, Math.floor(sec || 0));
+        const m = Math.floor(sec/60), s = sec%60;
+        return `${m}:${String(s).padStart(2,'0')}`;
+      }
+
+      function onReady(){
+        document.getElementById('btnPlay').onclick = () => player.playVideo();
+        document.getElementById('btnPause').onclick = () => player.pauseVideo();
+        document.getElementById('btnStop').onclick = () => player.stopVideo();
+
+        document.getElementById('btnBack').onclick = () => {
+          const t = player.getCurrentTime();
+          player.seekTo(Math.max(0, t - 10), true);
+        };
+        document.getElementById('btnFwd').onclick = () => {
+          const t = player.getCurrentTime();
+          duration = duration || player.getDuration() || 0;
+          player.seekTo(Math.min(duration || (t+10), t + 10), true);
+        };
+
+        const seek = document.getElementById('seekBar');
+        seek.addEventListener('input', () => {
+          duration = duration || player.getDuration() || 0;
+          if (!duration) return;
+          const target = (seek.value/1000) * duration;
+          document.getElementById('curTime').textContent = fmt(target);
+        });
+        seek.addEventListener('change', () => {
+          duration = duration || player.getDuration() || 0;
+          if (!duration) return;
+          const target = (seek.value/1000) * duration;
+          player.seekTo(target, true);
+        });
+
+        setTimeout(() => {
+          duration = player.getDuration() || 0;
+          document.getElementById('durTime').textContent = fmt(duration);
+        }, 800);
+      }
+
+      function onStateChange(){
+        if (timer) clearInterval(timer);
+        timer = setInterval(() => {
+          if (!player || !player.getCurrentTime) return;
+          const t = player.getCurrentTime();
+                    if (previewReadOnly && t > 0.3) {
+                        player.pauseVideo();
+                        player.seekTo(0.3, true);
+                    }
+          duration = duration || player.getDuration() || 0;
+          if (duration > 0) {
+            document.getElementById('seekBar').value = Math.floor((t/duration)*1000);
+            document.getElementById('durTime').textContent = fmt(duration);
+          }
+          document.getElementById('curTime').textContent = fmt(t);
+        }, 250);
+      }
+    })();
+</script>
+
+
+
+
+
+
+
+            </main>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <p>
+                    
+                        DIYA, Enterprise Knowledge Platform © Digital &amp; Technology, ONGC 2026 — JOY of Upskilling!
+                    
+                    
+                        🚀
+                    
+                </p>
+            </footer>
+        </div>
+    </div>
+    
+
+    <script src="/static/js/progress_tracker.js"></script>
+    <script>
+        // Session Timer Logic
+        
+        const loginTimeStr = "2026-06-06T18:31:26.307891+00:00";
+        if (loginTimeStr) {
+            const loginTime = new Date(loginTimeStr);
+            const loginTimeDisplay = document.getElementById('login-time-display');
+            const sessionTimeDisplay = document.getElementById('session-time-display');
+            
+            if (loginTimeDisplay) {
+                loginTimeDisplay.innerText = "Logged in: " + loginTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            }
+            
+            if (sessionTimeDisplay) {
+                setInterval(() => {
+                    const now = new Date();
+                    const diffMs = now - loginTime;
+                    const diffHrs = Math.floor(diffMs / 3600000);
+                    const diffMins = Math.floor((diffMs % 3600000) / 60000);
+                    const diffSecs = Math.floor((diffMs % 60000) / 1000);
+                    
+                    const fHrs = String(diffHrs).padStart(2, '0');
+                    const fMins = String(diffMins).padStart(2, '0');
+                    const fSecs = String(diffSecs).padStart(2, '0');
+                    
+                    sessionTimeDisplay.innerText = `Session: ${fHrs}:${fMins}:${fSecs}`;
+                }, 1000);
+            }
+        }
+        
+
+        // Theme Toggle Logic
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        if (themeToggleBtn) {
+            // Set initial button state
+            const isDark = document.documentElement.classList.contains('dark-mode');
+            themeToggleBtn.innerHTML = isDark ? '<span class="theme-icon">🌞</span>' : '<span class="theme-icon">🌙</span>';
+
+            themeToggleBtn.addEventListener('click', () => {
+                const root = document.documentElement;
+                root.classList.toggle('dark-mode');
+                
+                if (root.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme_v2', 'dark');
+                    themeToggleBtn.innerHTML = '<span class="theme-icon">🌞</span>';
+                } else {
+                    localStorage.setItem('theme_v2', 'light');
+                    themeToggleBtn.innerHTML = '<span class="theme-icon">🌙</span>';
+                }
+            });
+        }
+        
+        // Main Sidebar Toggle Logic
+        const mainSidebarToggleBtn = document.getElementById('main-sidebar-toggle');
+        if (mainSidebarToggleBtn) {
+            mainSidebarToggleBtn.addEventListener('click', () => {
+                const sidebar = document.getElementById('main-sidebar');
+                sidebar.classList.toggle('collapsed');
+                
+                if (sidebar.classList.contains('collapsed')) {
+                    localStorage.setItem('mainSidebarCollapsed', 'true');
+                } else {
+                    localStorage.setItem('mainSidebarCollapsed', 'false');
+                }
+            });
+        }
+
+        (function initSidebarBrandLayout() {
+            const canvas = document.getElementById('brandCanvasSidebar');
+            const left = document.getElementById('brandLayerLeft');
+            const right = document.getElementById('brandLayerRight');
+            const text1 = document.getElementById('brandLayerText1');
+            const text2 = document.getElementById('brandLayerText2');
+            if (!canvas || !left || !right || !text1 || !text2) return;
+
+            const defaults = {
+                left: { x: 0, y: 0, w: 47, h: 100, z: 2 },
+                right: { x: 47, y: 0, w: 53, h: 100, z: 2 },
+                text1: { x: 54, y: 10, w: 42, h: 18, z: 4, text: '', fontSize: 16, fontWeight: '700', fontStyle: 'normal', textAlign: 'left', color: '#64748b' },
+                text2: { x: 54, y: 30, w: 42, h: 18, z: 4, text: '', fontSize: 14, fontWeight: '400', fontStyle: 'normal', textAlign: 'left', color: '#64748b' },
+            };
+
+            let raw = {};
+            const scriptTag = document.getElementById('sidebar-brand-layout');
+            if (scriptTag && scriptTag.textContent) {
+                try {
+                    raw = JSON.parse(scriptTag.textContent);
+                } catch (err) {
+                    raw = {};
+                }
+            }
+
+            const layout = {
+                left: { ...defaults.left, ...(raw.left || {}) },
+                right: { ...defaults.right, ...(raw.right || {}) },
+                text1: { ...defaults.text1, ...(raw.text1 || {}) },
+                text2: { ...defaults.text2, ...(raw.text2 || {}) },
+            };
+
+            function applyRect(node, item) {
+                node.style.left = `${item.x}%`;
+                node.style.top = `${item.y}%`;
+                node.style.width = `${item.w}%`;
+                node.style.height = `${item.h}%`;
+                node.style.zIndex = String(item.z || 2);
+            }
+
+            function applyText(node, item) {
+                applyRect(node, item);
+                node.textContent = item.text || '';
+                node.style.display = item.text ? 'flex' : 'none';
+                node.style.fontSize = `${item.fontSize || 14}px`;
+                node.style.fontWeight = item.fontWeight || '400';
+                node.style.fontStyle = item.fontStyle || 'normal';
+                node.style.textAlign = item.textAlign || 'left';
+                node.style.justifyContent = (item.textAlign || 'left') === 'center' ? 'center' : ((item.textAlign || 'left') === 'right' ? 'flex-end' : 'flex-start');
+                node.style.color = item.color || '#64748b';
+            }
+
+            applyRect(left, layout.left);
+            applyRect(right, layout.right);
+            applyText(text1, layout.text1);
+            applyText(text2, layout.text2);
+        })();
+        
+        // Disable right-click globally
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // Notification bell and popup sync
+        function getCookie(name) {
+            let value = null;
+            if (document.cookie && document.cookie !== '') {
+                const parts = document.cookie.split(';');
+                for (let i = 0; i < parts.length; i++) {
+                    const c = parts[i].trim();
+                    if (c.startsWith(name + '=')) {
+                        value = decodeURIComponent(c.slice(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return value;
+        }
+
+        (function initTopNotifications() {
+            const wrap = document.getElementById('navNotifWrap');
+            const bellBtn = document.getElementById('notifBellBtn');
+            const popup = document.getElementById('notifPopup');
+            const badge = document.getElementById('notifBadge');
+            const helpCountEl = document.getElementById('notifHelpCount');
+            const restrictedCountEl = document.getElementById('notifRestrictedCount');
+            const listEl = document.getElementById('notifList');
+            const markAllBtn = document.getElementById('notifMarkAllBtn');
+
+            if (!wrap || !bellBtn || !popup || !badge || !helpCountEl || !restrictedCountEl || !listEl || !markAllBtn) return;
+
+            const snapshotUrl = wrap.dataset.snapshotUrl;
+            const markReadUrl = wrap.dataset.markReadUrl;
+
+            function applyCounts(totalUnread, helpUnread, restrictedUnread) {
+                const safeTotal = Number(totalUnread) || 0;
+                const safeHelp = Number(helpUnread) || 0;
+                const safeRestricted = Number(restrictedUnread) || 0;
+                badge.textContent = safeTotal > 99 ? '99+' : String(safeTotal);
+                badge.classList.toggle('hidden', safeTotal === 0);
+                helpCountEl.textContent = String(safeHelp);
+                restrictedCountEl.textContent = String(safeRestricted);
+            }
+
+            function renderItems(items) {
+                if (!Array.isArray(items) || items.length === 0) {
+                    listEl.innerHTML = '<div class="notif-empty">No notifications yet.</div>';
+                    return;
+                }
+
+                listEl.innerHTML = items.map(item => {
+                    const href = item.target_url && item.target_url.trim() ? item.target_url : '#';
+                    const unreadClass = item.is_read ? '' : 'unread';
+                    const title = (item.title || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    const body = (item.body || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    const group = (item.group || 'General').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    const time = (item.created_at || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    return `
+                        <a href="${href}" class="notif-item ${unreadClass}" data-notification-id="${item.id}">
+                            <div class="notif-item-title">${title}</div>
+                            <div class="notif-item-body">${body}</div>
+                            <div class="notif-item-meta">
+                                <span class="notif-meta-left">${group}</span>
+                                <span class="notif-meta-right">
+                                    <span>${time}</span>
+                                    ${item.is_read ? '' : `<button type="button" class="notif-mark-read-btn" data-notification-id="${item.id}" title="Mark as read">✓</button>`}
+                                </span>
+                            </div>
+                        </a>
+                    `;
+                }).join('');
+            }
+
+            async function markRead(ids) {
+                try {
+                    const formData = new FormData();
+                    if (Array.isArray(ids)) {
+                        ids.forEach(id => formData.append('ids[]', String(id)));
+                    }
+                    formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+                    await fetch(markReadUrl, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken'),
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: formData
+                    });
+                } catch (err) {
+                    // Keep UI resilient and refresh after failure.
+                }
+            }
+
+            async function fetchSnapshot() {
+                try {
+                    const res = await fetch(snapshotUrl, {
+                        method: 'GET',
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    });
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    applyCounts(data.total_unread, data.help_unread, data.restricted_unread);
+                    renderItems(data.items);
+                } catch (err) {
+                    // Keep the last rendered state when polling fails.
+                }
+            }
+
+            async function markReadAndNavigate(notificationId, href) {
+                await markRead([notificationId]);
+
+                if (href && href !== '#') {
+                    window.location.href = href;
+                    return;
+                }
+                fetchSnapshot();
+            }
+
+            markAllBtn.addEventListener('click', async (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                await markRead();
+                fetchSnapshot();
+            });
+
+            bellBtn.addEventListener('click', () => {
+                popup.classList.toggle('open');
+                if (popup.classList.contains('open')) {
+                    fetchSnapshot();
+                }
+            });
+
+            document.addEventListener('click', (event) => {
+                if (!wrap.contains(event.target)) {
+                    popup.classList.remove('open');
+                }
+            });
+
+            listEl.addEventListener('click', (event) => {
+                const markBtn = event.target.closest('.notif-mark-read-btn');
+                if (markBtn) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    const notificationId = markBtn.getAttribute('data-notification-id');
+                    if (notificationId) {
+                        markRead([notificationId]).then(fetchSnapshot);
+                    }
+                    return;
+                }
+
+                const link = event.target.closest('.notif-item');
+                if (!link) return;
+                event.preventDefault();
+                const notificationId = link.getAttribute('data-notification-id');
+                const href = link.getAttribute('href');
+                if (!notificationId) {
+                    if (href && href !== '#') window.location.href = href;
+                    return;
+                }
+                markReadAndNavigate(notificationId, href);
+            });
+
+            fetchSnapshot();
+            setInterval(fetchSnapshot, 20000);
+        })();
+    </script>
+    
+</body>
+</html>

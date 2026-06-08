@@ -1,0 +1,82 @@
+version: '3.9'
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: joy_lms_db
+    environment:
+      POSTGRES_DB: joy_lms
+      POSTGRES_USER: joy_lms_user
+      POSTGRES_PASSWORD: devpassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U joy_lms_user -d joy_lms"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: joy_lms_redis
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  web:
+    build: .
+    container_name: joy_lms_web
+    command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      - DATABASE_URL=postgres://joy_lms_user:devpassword@db:5432/joy_lms
+      - REDIS_URL=redis://redis:6379/0
+      - DJANGO_SETTINGS_MODULE=joy_lms.settings.base
+      - DEBUG=True
+    volumes:
+      - .:/app
+      - ./media:/app/media
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
+
+  worker:
+    build: .
+    container_name: joy_lms_worker
+    command: celery -A joy_lms worker --loglevel=info --concurrency=2
+    environment:
+      - DATABASE_URL=postgres://joy_lms_user:devpassword@db:5432/joy_lms
+      - REDIS_URL=redis://redis:6379/0
+      - DJANGO_SETTINGS_MODULE=joy_lms.settings.base
+    volumes:
+      - .:/app
+      - ./media:/app/media
+    depends_on:
+      - db
+      - redis
+    restart: unless-stopped
+
+  beat:
+    build: .
+    container_name: joy_lms_beat
+    command: celery -A joy_lms beat --loglevel=info
+    environment:
+      - DATABASE_URL=postgres://joy_lms_user:devpassword@db:5432/joy_lms
+      - REDIS_URL=redis://redis:6379/0
+      - DJANGO_SETTINGS_MODULE=joy_lms.settings.base
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:

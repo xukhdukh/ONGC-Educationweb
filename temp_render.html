@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Joy LMS — Where Learning Meets Fun! A modern gamified learning management system.">
+    <title>Sign In — DIYA LMS</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Static CSS -->
+    
+    <link rel="stylesheet" href="/static/css/joy_lms.css?v=1.0.9">
+
+    
+
+    <style>
+        .nav-notif-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .notif-bell-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            font-size: 1.08rem;
+        }
+        .notif-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 10px;
+            background: #dc2626;
+            color: #fff;
+            font-size: 0.68rem;
+            line-height: 18px;
+            text-align: center;
+            padding: 0 4px;
+            font-weight: 700;
+            border: 1px solid #fff;
+        }
+        .notif-badge.hidden {
+            display: none;
+        }
+        .notif-popup {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 10px);
+            width: 420px;
+            max-width: calc(100vw - 24px);
+            border: 1px solid var(--glass-border);
+            background: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.22);
+            z-index: 2000;
+            display: none;
+            overflow: hidden;
+        }
+        .notif-popup.open {
+            display: block;
+        }
+        .notif-head {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .notif-mark-all-btn {
+            border: 1px solid var(--glass-border);
+            background: rgba(16, 185, 129, 0.12);
+            color: #065f46;
+            font-size: 0.74rem;
+            font-weight: 700;
+            border-radius: 999px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .notif-mark-all-btn:hover {
+            background: rgba(16, 185, 129, 0.2);
+        }
+        .notif-head-title {
+            font-weight: 700;
+            font-size: 0.92rem;
+        }
+        .notif-counters {
+            display: flex;
+            gap: 8px;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--glass-border);
+            background: rgba(15, 23, 42, 0.03);
+            flex-wrap: wrap;
+        }
+        .notif-counter-pill {
+            font-size: 0.76rem;
+            border-radius: 999px;
+            border: 1px solid var(--glass-border);
+            padding: 5px 10px;
+            font-weight: 600;
+        }
+        .notif-list {
+            max-height: 340px;
+            overflow-y: auto;
+            padding: 6px;
+        }
+        .notif-item {
+            display: block;
+            padding: 10px;
+            border-radius: 10px;
+            text-decoration: none;
+            border: 1px solid transparent;
+            margin-bottom: 6px;
+            color: inherit;
+            background: rgba(0,0,0,0.02);
+        }
+        .notif-item:hover {
+            border-color: var(--glass-border);
+            background: rgba(99, 102, 241, 0.07);
+        }
+        .notif-item.unread {
+            border-color: rgba(220, 38, 38, 0.18);
+            background: rgba(220, 38, 38, 0.06);
+        }
+        .notif-item-title {
+            font-size: 0.86rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .notif-item-body {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .notif-item-meta {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+        }
+        .notif-meta-left,
+        .notif-meta-right {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .notif-mark-read-btn {
+            border: 1px solid var(--glass-border);
+            background: rgba(16, 185, 129, 0.12);
+            color: #065f46;
+            font-weight: 700;
+            border-radius: 8px;
+            font-size: 0.68rem;
+            padding: 3px 6px;
+            cursor: pointer;
+        }
+        .notif-mark-read-btn:hover {
+            background: rgba(16, 185, 129, 0.2);
+        }
+        .notif-empty {
+            padding: 22px 12px;
+            text-align: center;
+            font-size: 0.84rem;
+            color: var(--text-muted);
+        }
+    </style>
+
+    <!-- Theme Initialization - light is default, dark is opt-in -->
+    <script>
+        const savedTheme = localStorage.getItem('theme_v2') || 'light';
+        if (savedTheme === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
+</head>
+<body>
+    
+        <!-- Unauthenticated Layout -->
+        <!-- Flash Messages -->
+        
+
+        <main class="main-content-unauth">
+            
+<div class="login-fullscreen-page" id="login-page">
+
+    <!-- Full-screen Banner Background -->
+    <div class="login-bg-layer">
+        <img
+            src="/static/images/login_banner.png"
+            alt="DIYA LMS — Login Banner"
+            class="login-bg-img"
+            draggable="false"
+        />
+        <div class="login-bg-vignette"></div>
+    </div>
+
+    <!-- Guidance Help Button -->
+    <button
+        type="button"
+        class="login-help-btn"
+        id="login-help-btn"
+        title="Login Guidance"
+        aria-label="Login Guidance"
+    >
+        <span class="help-icon">ℹ️</span>
+    </button>
+
+    <!-- Compact Login Tile (top-right) -->
+    <div class="login-tile" id="login-tile">
+        <div class="login-tile-inner">
+
+            <!-- Header -->
+            <div class="login-tile-header">
+                <div class="login-tile-logo">🎓</div>
+                <h1 class="login-tile-title">Welcome Back!</h1>
+                <p class="login-tile-subtitle">Sign in to continue your learning journey</p>
+            </div>
+
+            <!-- Error Messages -->
+            
+
+            <!-- Login Form -->
+            <form id="login-form" class="login-tile-form" method="POST" action="">
+                <input type="hidden" name="csrfmiddlewaretoken" value="oAHk7TTuin3bjmsSIsUHWtgnQcYvZM8gQJAUSOGHM4wicxWbT50kRqy6LGnbaBg2">
+                <div class="ltf-group">
+                    <label class="ltf-label" for="login-username">Username</label>
+                    <div class="ltf-input-wrap">
+                        <span class="ltf-input-icon">👤</span>
+                        <input type="text" id="login-username" name="username"
+                               class="ltf-input" placeholder="Enter your username"
+                               required autocomplete="username">
+                    </div>
+                </div>
+                <div class="ltf-group">
+                    <label class="ltf-label" for="login-password">Password</label>
+                    <div class="ltf-input-wrap">
+                        <span class="ltf-input-icon">🔒</span>
+                        <input type="password" id="login-password" name="password"
+                               class="ltf-input" placeholder="Enter your password"
+                               required autocomplete="current-password">
+                        <button type="button" class="ltf-pw-toggle"
+                                onclick="togglePassword('login-password')">👁</button>
+                    </div>
+                </div>
+                <button type="submit" class="ltf-submit-btn" id="login-btn">
+                    <span>Sign In 🚀</span>
+                </button>
+            </form>
+
+            <div class="login-tile-footer">
+                <p>New to DIYA enterprise knowledge platform?<br>
+                <a href="/register/" class="ltf-link">Create an account</a></p>
+            </div>
+
+            <!-- Subtle rainbow accent bar -->
+            <div class="login-tile-rainbow">
+                <span style="background:#e60000;"></span>
+                <span style="background:#ff7700;"></span>
+                <span style="background:#ffe600;"></span>
+                <span style="background:#009900;"></span>
+                <span style="background:#003399;"></span>
+                <span style="background:#7b2d8b;"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom branding strip -->
+    <div class="login-bottom-brand">
+        <div class="login-brand-bar">
+            <span style="background:#e60000;"></span>
+            <span style="background:#ff7700;"></span>
+            <span style="background:#ffe600;"></span>
+            <span style="background:#009900;"></span>
+            <span style="background:#003399;"></span>
+            <span style="background:#7b2d8b;"></span>
+        </div>
+    </div>
+
+    <!-- Guidance Modal -->
+    <div class="login-modal-overlay" id="login-modal">
+        <div class="login-modal-content">
+            <button class="login-modal-close" id="login-modal-close" aria-label="Close guidance">&times;</button>
+            <h3 class="login-modal-title">📖 Login Guidance</h3>
+            <div class="login-modal-body">
+                <p>For ONGC Employees Login can be through 'Domain Login' credentials.</p>
+                <p>For Trainees, Fill the 'Create an Account' form with details sought, with supporting document uploading.</p>
+                <p>System Admin will approve 'New Trainee Account'.</p>
+                <p>Mentor and Teacher accounts will be created by System Admin or Institute Admin and email credentials.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* ── Full-Screen Login Page ───────────────────────────────────────── */
+.login-fullscreen-page {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+/* ── Background Layer ─────────────────────────────────────────────── */
+.login-bg-layer {
+    flex: 0 1 auto;
+    height: 100vh;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.login-bg-img {
+    height: 100%;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    object-position: left center;
+    display: block;
+    image-rendering: auto;
+    -ms-interpolation-mode: bicubic;
+}
+
+.login-bg-vignette {
+    display: none; /* Removed vignette as per requirement */
+}
+
+/* ── Help Button ────────────────────────────────────────────────── */
+.login-help-btn {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0ea5e9, #2563eb);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.login-help-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+}
+
+.help-icon {
+    font-size: 1.4rem;
+    font-style: normal;
+}
+
+/* ── Guidance Modal ─────────────────────────────────────────────── */
+.login-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.login-modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.login-modal-content {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    position: relative;
+    transform: translateY(20px);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.login-modal-overlay.active .login-modal-content {
+    transform: translateY(0);
+}
+
+.login-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: #64748b;
+    cursor: pointer;
+    padding: 4px 8px;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.login-modal-close:hover {
+    color: #0f172a;
+}
+
+.login-modal-title {
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    color: #1e293b;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.login-modal-body p {
+    font-size: 0.95rem;
+    color: #475569;
+    line-height: 1.6;
+    margin-bottom: 14px;
+}
+.login-modal-body p:last-child {
+    margin-bottom: 0;
+}
+
+/* ── Login Tile ───────────────────────────────────────────────────── */
+.login-tile {
+    flex: 1 1 auto; /* Fills remaining space */
+    position: relative;
+    height: 100vh;
+    max-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; /* Center the inner content */
+    
+    /* Background from Image 2 */
+    background: rgba(244, 247, 250, 0.95);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-left: 1px solid rgba(0,0,0,0.05);
+    box-shadow: -8px 0 32px rgba(0,0,0,0.03);
+    
+    /* Collapse animation */
+    transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                width 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                flex 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: right center;
+}
+
+
+
+.login-tile-inner {
+    padding: 32px;
+    position: relative;
+    width: 100%;
+    max-width: 380px; /* Constrain form width inside the expanded tile */
+}
+
+/* ── Tile Header ──────────────────────────────────────────────────── */
+.login-tile-header {
+    text-align: center;
+    margin-bottom: 12px; /* Reduced margin */
+}
+
+.login-tile-logo {
+    font-size: 1.8rem; /* Reduced font size */
+    margin-bottom: 4px;
+    display: block;
+    animation: float 3s ease-in-out infinite;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+}
+
+.login-tile-title {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #1e293b; /* Dark text for light background */
+    margin-bottom: 4px;
+}
+
+.login-tile-subtitle {
+    color: #64748b; /* Darker muted text */
+    font-size: 0.85rem;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+/* ── Tile Alert ───────────────────────────────────────────────────── */
+.login-tile-alert {
+    padding: 8px 12px;
+    font-size: 0.78rem;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239,68,68,0.35);
+    color: #fca5a5;
+}
+
+/* ── Tile Form ────────────────────────────────────────────────────── */
+.login-tile-form {
+    margin-bottom: 10px;
+}
+
+.ltf-group {
+    margin-bottom: 8px; /* Reduced spacing */
+}
+
+.ltf-label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #475569; /* Dark text */
+}
+
+.ltf-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.ltf-input-icon {
+    position: absolute;
+    left: 10px;
+    font-size: 0.75rem;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.ltf-input {
+    width: 100%;
+    padding: 10px 12px 10px 36px;
+    background: #ffffff; /* White input */
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    color: #1e293b;
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    transition: all 0.25s ease;
+    outline: none;
+}
+
+.ltf-input::placeholder {
+    color: #94a3b8;
+}
+
+.ltf-input:focus {
+    border-color: rgba(56, 189, 248, 0.5);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12);
+    background: rgba(255,255,255,0.1);
+}
+
+.ltf-pw-toggle {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #94a3b8;
+    transition: color 0.2s;
+    z-index: 2;
+}
+
+.ltf-pw-toggle:hover {
+    color: #475569;
+}
+
+/* ── Submit Button ────────────────────────────────────────────────── */
+.ltf-submit-btn {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-family: var(--font-sans);
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(to right, #0ea5e9, #2563eb); /* Image 2 button gradient */
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(14, 165, 233, 0.3);
+    letter-spacing: 0.02em;
+    margin-top: 8px;
+}
+
+.ltf-submit-btn:hover {
+    background: linear-gradient(to right, #0284c7, #1d4ed8);
+    box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
+    transform: translateY(-1px);
+}
+
+.ltf-submit-btn:active {
+    transform: translateY(0);
+}
+
+/* ── Footer ───────────────────────────────────────────────────────── */
+.login-tile-footer {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 16px;
+}
+
+.ltf-link {
+    color: #38bdf8;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.ltf-link:hover {
+    color: #7dd3fc;
+}
+
+/* ── Rainbow Bar ──────────────────────────────────────────────────── */
+.login-tile-rainbow {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    display: flex;
+    border-radius: 0 0 20px 20px;
+    overflow: hidden;
+}
+
+.login-tile-rainbow span {
+    flex: 1;
+}
+
+/* ── Bottom Branding ──────────────────────────────────────────────── */
+.login-bottom-brand {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+}
+
+.login-brand-bar {
+    display: flex;
+    height: 4px;
+    width: 100%;
+}
+
+.login-brand-bar span {
+    flex: 1;
+}
+
+/* ── Scrollbar for tile ───────────────────────────────────────────── */
+.login-tile::-webkit-scrollbar {
+    width: 4px;
+}
+
+.login-tile::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.login-tile::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.15);
+    border-radius: 4px;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+    .login-tile {
+        width: calc(100vw - 24px);
+        right: 12px;
+        top: 12px;
+        max-height: calc(100vh - 24px);
+    }
+
+    .login-tile-inner {
+        padding: 22px 18px 14px;
+    }
+
+    .login-tile-toggle {
+        top: 12px;
+        right: 12px;
+    }
+
+    .login-tile-title {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .login-tile-inner {
+        padding: 18px 14px 12px;
+    }
+
+    .ltf-input {
+        padding: 9px 10px 9px 32px;
+        font-size: 0.82rem;
+    }
+}
+
+/* ── Entrance Animation ───────────────────────────────────────────── */
+@keyframes tileSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(60px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+.login-tile {
+    animation: tileSlideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+}
+</style>
+
+<script>
+function togglePassword(id) {
+    const input = document.getElementById(id);
+    input.type = input.type === 'password' ? 'text' : 'password';
+}
+
+// Help Guidance Modal Logic
+(function() {
+    const helpBtn = document.getElementById('login-help-btn');
+    const modal = document.getElementById('login-modal');
+    const closeBtn = document.getElementById('login-modal-close');
+
+    if (!helpBtn || !modal || !closeBtn) return;
+
+    function openModal() {
+        modal.classList.add('active');
+    }
+
+    function closeModal() {
+        modal.classList.remove('active');
+    }
+
+    helpBtn.addEventListener('click', openModal);
+    closeBtn.addEventListener('click', closeModal);
+
+    // Close when clicking outside the modal content
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+})();
+</script>
+
+        </main>
+    
+
+    <script src="/static/js/progress_tracker.js"></script>
+    <script>
+        // Session Timer Logic
+        
+
+        // Theme Toggle Logic
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        if (themeToggleBtn) {
+            // Set initial button state
+            const isDark = document.documentElement.classList.contains('dark-mode');
+            themeToggleBtn.innerHTML = isDark ? '<span class="theme-icon">🌞</span>' : '<span class="theme-icon">🌙</span>';
+
+            themeToggleBtn.addEventListener('click', () => {
+                const root = document.documentElement;
+                root.classList.toggle('dark-mode');
+                
+                if (root.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme_v2', 'dark');
+                    themeToggleBtn.innerHTML = '<span class="theme-icon">🌞</span>';
+                } else {
+                    localStorage.setItem('theme_v2', 'light');
+                    themeToggleBtn.innerHTML = '<span class="theme-icon">🌙</span>';
+                }
+            });
+        }
+        
+        // Main Sidebar Toggle Logic
+        const mainSidebarToggleBtn = document.getElementById('main-sidebar-toggle');
+        if (mainSidebarToggleBtn) {
+            mainSidebarToggleBtn.addEventListener('click', () => {
+                const sidebar = document.getElementById('main-sidebar');
+                sidebar.classList.toggle('collapsed');
+                
+                if (sidebar.classList.contains('collapsed')) {
+                    localStorage.setItem('mainSidebarCollapsed', 'true');
+                } else {
+                    localStorage.setItem('mainSidebarCollapsed', 'false');
+                }
+            });
+        }
+
+        (function initSidebarBrandLayout() {
+            const canvas = document.getElementById('brandCanvasSidebar');
+            const left = document.getElementById('brandLayerLeft');
+            const right = document.getElementById('brandLayerRight');
+            const text1 = document.getElementById('brandLayerText1');
+            const text2 = document.getElementById('brandLayerText2');
+            if (!canvas || !left || !right || !text1 || !text2) return;
+
+            const defaults = {
+                left: { x: 0, y: 0, w: 47, h: 100, z: 2 },
+                right: { x: 47, y: 0, w: 53, h: 100, z: 2 },
+                text1: { x: 54, y: 10, w: 42, h: 18, z: 4, text: '', fontSize: 16, fontWeight: '700', fontStyle: 'normal', textAlign: 'left', color: '#64748b' },
+                text2: { x: 54, y: 30, w: 42, h: 18, z: 4, text: '', fontSize: 14, fontWeight: '400', fontStyle: 'normal', textAlign: 'left', color: '#64748b' },
+            };
+
+            let raw = {};
+            const scriptTag = document.getElementById('sidebar-brand-layout');
+            if (scriptTag && scriptTag.textContent) {
+                try {
+                    raw = JSON.parse(scriptTag.textContent);
+                } catch (err) {
+                    raw = {};
+                }
+            }
+
+            const layout = {
+                left: { ...defaults.left, ...(raw.left || {}) },
+                right: { ...defaults.right, ...(raw.right || {}) },
+                text1: { ...defaults.text1, ...(raw.text1 || {}) },
+                text2: { ...defaults.text2, ...(raw.text2 || {}) },
+            };
+
+            function applyRect(node, item) {
+                node.style.left = `${item.x}%`;
+                node.style.top = `${item.y}%`;
+                node.style.width = `${item.w}%`;
+                node.style.height = `${item.h}%`;
+                node.style.zIndex = String(item.z || 2);
+            }
+
+            function applyText(node, item) {
+                applyRect(node, item);
+                node.textContent = item.text || '';
+                node.style.display = item.text ? 'flex' : 'none';
+                node.style.fontSize = `${item.fontSize || 14}px`;
+                node.style.fontWeight = item.fontWeight || '400';
+                node.style.fontStyle = item.fontStyle || 'normal';
+                node.style.textAlign = item.textAlign || 'left';
+                node.style.justifyContent = (item.textAlign || 'left') === 'center' ? 'center' : ((item.textAlign || 'left') === 'right' ? 'flex-end' : 'flex-start');
+                node.style.color = item.color || '#64748b';
+            }
+
+            applyRect(left, layout.left);
+            applyRect(right, layout.right);
+            applyText(text1, layout.text1);
+            applyText(text2, layout.text2);
+        })();
+        
+        // Disable right-click globally
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // Notification bell and popup sync
+        function getCookie(name) {
+            let value = null;
+            if (document.cookie && document.cookie !== '') {
+                const parts = document.cookie.split(';');
+                for (let i = 0; i < parts.length; i++) {
+                    const c = parts[i].trim();
+                    if (c.startsWith(name + '=')) {
+                        value = decodeURIComponent(c.slice(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return value;
+        }
+
+        (function initTopNotifications() {
+            const wrap = document.getElementById('navNotifWrap');
+            const bellBtn = document.getElementById('notifBellBtn');
+            const popup = document.getElementById('notifPopup');
+            const badge = document.getElementById('notifBadge');
+            const helpCountEl = document.getElementById('notifHelpCount');
+            const restrictedCountEl = document.getElementById('notifRestrictedCount');
+            const listEl = document.getElementById('notifList');
+            const markAllBtn = document.getElementById('notifMarkAllBtn');
+
+            if (!wrap || !bellBtn || !popup || !badge || !helpCountEl || !restrictedCountEl || !listEl || !markAllBtn) return;
+
+            const snapshotUrl = wrap.dataset.snapshotUrl;
+            const markReadUrl = wrap.dataset.markReadUrl;
+
+            function applyCounts(totalUnread, helpUnread, restrictedUnread) {
+                const safeTotal = Number(totalUnread) || 0;
+                const safeHelp = Number(helpUnread) || 0;
+                const safeRestricted = Number(restrictedUnread) || 0;
+                badge.textContent = safeTotal > 99 ? '99+' : String(safeTotal);
+                badge.classList.toggle('hidden', safeTotal === 0);
+                helpCountEl.textContent = String(safeHelp);
+                restrictedCountEl.textContent = String(safeRestricted);
+            }
+
+            function renderItems(items) {
+                if (!Array.isArray(items) || items.length === 0) {
+                    listEl.innerHTML = '<div class="notif-empty">No notifications yet.</div>';
+                    return;
+                }
+
+                listEl.innerHTML = items.map(item => {
+                    const href = item.target_url && item.target_url.trim() ? item.target_url : '#';
+                    const unreadClass = item.is_read ? '' : 'unread';
+                    const title = (item.title || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    const body = (item.body || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    const group = (item.group || 'General').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    const time = (item.created_at || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    return `
+                        <a href="${href}" class="notif-item ${unreadClass}" data-notification-id="${item.id}">
+                            <div class="notif-item-title">${title}</div>
+                            <div class="notif-item-body">${body}</div>
+                            <div class="notif-item-meta">
+                                <span class="notif-meta-left">${group}</span>
+                                <span class="notif-meta-right">
+                                    <span>${time}</span>
+                                    ${item.is_read ? '' : `<button type="button" class="notif-mark-read-btn" data-notification-id="${item.id}" title="Mark as read">✓</button>`}
+                                </span>
+                            </div>
+                        </a>
+                    `;
+                }).join('');
+            }
+
+            async function markRead(ids) {
+                try {
+                    const formData = new FormData();
+                    if (Array.isArray(ids)) {
+                        ids.forEach(id => formData.append('ids[]', String(id)));
+                    }
+                    formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+                    await fetch(markReadUrl, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken'),
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: formData
+                    });
+                } catch (err) {
+                    // Keep UI resilient and refresh after failure.
+                }
+            }
+
+            async function fetchSnapshot() {
+                try {
+                    const res = await fetch(snapshotUrl, {
+                        method: 'GET',
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    });
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    applyCounts(data.total_unread, data.help_unread, data.restricted_unread);
+                    renderItems(data.items);
+                } catch (err) {
+                    // Keep the last rendered state when polling fails.
+                }
+            }
+
+            async function markReadAndNavigate(notificationId, href) {
+                await markRead([notificationId]);
+
+                if (href && href !== '#') {
+                    window.location.href = href;
+                    return;
+                }
+                fetchSnapshot();
+            }
+
+            markAllBtn.addEventListener('click', async (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                await markRead();
+                fetchSnapshot();
+            });
+
+            bellBtn.addEventListener('click', () => {
+                popup.classList.toggle('open');
+                if (popup.classList.contains('open')) {
+                    fetchSnapshot();
+                }
+            });
+
+            document.addEventListener('click', (event) => {
+                if (!wrap.contains(event.target)) {
+                    popup.classList.remove('open');
+                }
+            });
+
+            listEl.addEventListener('click', (event) => {
+                const markBtn = event.target.closest('.notif-mark-read-btn');
+                if (markBtn) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    const notificationId = markBtn.getAttribute('data-notification-id');
+                    if (notificationId) {
+                        markRead([notificationId]).then(fetchSnapshot);
+                    }
+                    return;
+                }
+
+                const link = event.target.closest('.notif-item');
+                if (!link) return;
+                event.preventDefault();
+                const notificationId = link.getAttribute('data-notification-id');
+                const href = link.getAttribute('href');
+                if (!notificationId) {
+                    if (href && href !== '#') window.location.href = href;
+                    return;
+                }
+                markReadAndNavigate(notificationId, href);
+            });
+
+            fetchSnapshot();
+            setInterval(fetchSnapshot, 20000);
+        })();
+    </script>
+    
+</body>
+</html>

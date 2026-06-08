@@ -1,0 +1,61 @@
+services:
+  - type: web
+    name: joy-lms
+    env: python
+    plan: starter
+    buildCommand: |
+      pip install -r requirements/render.txt
+      python manage.py migrate --settings=joy_lms.settings.render
+      python manage.py collectstatic --noinput --settings=joy_lms.settings.render
+    startCommand: gunicorn joy_lms.wsgi --workers 2 --bind 0.0.0.0:$PORT --timeout 120
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: joy_lms.settings.render
+      - key: DEBUG
+        value: "False"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: joy-lms-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: joy-lms-redis
+          type: redis
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+    disk:
+      name: joy-lms-media
+      mountPath: /app/media
+      sizeGB: 10
+
+  - type: worker
+    name: joy-lms-worker
+    env: python
+    plan: starter
+    buildCommand: pip install -r requirements/render.txt
+    startCommand: celery -A joy_lms worker --loglevel=info --concurrency=2
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: joy_lms.settings.render
+      - key: DATABASE_URL
+        fromDatabase:
+          name: joy-lms-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: joy-lms-redis
+          type: redis
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+
+  - type: redis
+    name: joy-lms-redis
+    plan: free
+
+databases:
+  - name: joy-lms-db
+    databaseName: joy_lms
+    user: joy_lms_user
+    plan: free
